@@ -2,17 +2,12 @@ import java.util.Scanner;
 import java.util.TreeMap;
 
 public class Calculator {
-    public static void main(String[] args) {
+    public static String calc(String input) {
         converter converter = new converter();
-        //2+3
-        //V-VII
         String[] actions = {"+", "-", "/", "*"};
         String[] regexActions = {"\\+", "-", "/", "\\*"};
-        Scanner scn = new Scanner(System.in);
-        System.out.print("Введите выражение: ");
-        String exp = scn.nextLine();
         int count=0;
-        for (char element : exp.toCharArray()){
+        for (char element : input.toCharArray()){
             if (element == '+') count++;
             if (element == '-') count++;
             if (element == '*') count++;
@@ -20,25 +15,23 @@ public class Calculator {
         }
         if (count>1)
         {
-            System.out.println("формат математической операции не удовлетворяет заданию\n");
-            return;
+            return("1");
         }
-        exp = exp.replace(" ", ""); // Чтобы можно вводить выражение с пробелами - удаляем пробелы
+        input = input.replace(" ", ""); // Чтобы можно вводить выражение с пробелами - удаляем пробелы
         // Определяем арифметическое действие
         int actionIndex=-1;
         for (int c = 0; c < actions.length; c++) {
-            if(exp.contains(actions[c])){
+            if(input.contains(actions[c])){
                 actionIndex = c;
                 break;
             }
         }
         //Если не нашли арифметического действия, завершаем программу
         if(actionIndex==-1){
-            System.out.println("Ошибка в выражении");
-            return;
+            return("2");
         }
         //"2-4".split("-")-> {"2", "4"}
-        String[] data = exp.split(regexActions[actionIndex]);
+        String[] data = input.split(regexActions[actionIndex]);
         //Определяем, находятся ли числа в одном формате (оба римские или оба арабские)
         if(converter.isRoman(data[0]) == converter.isRoman(data[1])){
             int x1=0,y1=0;
@@ -53,6 +46,10 @@ public class Calculator {
                 x1 = Integer.parseInt(data[0]);
                 y1 = Integer.parseInt(data[1]);
             }
+            if (x1<0) {return("3");}
+            if (x1>9) {return("3");}
+            if (y1<0) {return("3");}
+            if (y1>9) {return("3");}
             // выполняем с числами арифметические действие
             int result=0;
             switch (actions[actionIndex]){
@@ -77,10 +74,32 @@ public class Calculator {
                 System.out.println(result);
             }
         }else {
+            return "4";
+        }
+        return input;
+    }
+    public static void main(String[] args) {
+        //2+3
+        //V-VII
+        Scanner scn = new Scanner(System.in);
+        System.out.print("Введите выражение: ");
+        String exp = scn.nextLine();
+        exp = calc(exp);
+        if (exp == "1") {
+            System.out.println("формат математической операции не удовлетворяет заданию\n");
+        }
+        if (exp == "2") {
+            System.out.println("Ошибка в выражении");
+        }
+        if (exp == "3") {
+            System.out.println("Числа не должны быть меньше 0 и больше 9\n");
+        }
+        if (exp == "4") {
             System.out.println("Числа должны быть в одном формате");
         }
+
     }
 
 //--------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------
-    }
+}
